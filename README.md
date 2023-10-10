@@ -5,11 +5,11 @@
 
 Submitted by: **Eric SMith**
 
-Time spent: **X** hours spent in total
+Time spent: **1** hours spent in total
 
 ## Summary
 
-**Random Pet** is an android app that displays three random dogs.
+**Random Pet list** is an Android app that displays a list of random dogs.
 
 If I had to describe this project in three (3) emojis, they would be: happy, sad, confused
 
