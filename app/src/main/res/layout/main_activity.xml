@@ -8,34 +8,20 @@
     android:gravity="center_horizontal"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/petImage1"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_weight="1"
-        android:src="@drawable/petted_dog" />
-
-    <ImageView
-        android:id="@+id/petImage2"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/petted_dog" />
-
-    <ImageView
-        android:id="@+id/petImage3"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/petted_dog" />
-
     <Button
         android:id="@+id/petButton"
         android:layout_width="280dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
         android:text="Random Pet" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pet_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
 </LinearLayout>
+
+
+
+

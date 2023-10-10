@@ -1,56 +1,41 @@
 package com.example.randompet
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
-import android.util.Log
-
-import org.json.JSONArray
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import org.json.JSONObject
 import cz.msebera.android.httpclient.Header
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     private val client = AsyncHttpClient()
-    private var petImageURLs = listOf<String>()
-    private val NUM_IMAGES = 3
+    private lateinit var petAdapter: PetAdapter
+    private var petImageURLs = listOf<String>() // This was missing, and it's necessary for code logic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
         val button: Button = findViewById(R.id.petButton)
-        val imageView1: ImageView = findViewById(R.id.petImage1)
-        val imageView2: ImageView = findViewById(R.id.petImage2)
-        val imageView3: ImageView = findViewById(R.id.petImage3)
+        val petListView: RecyclerView = findViewById(R.id.pet_list)
+
+        petAdapter = PetAdapter(emptyList())
+        petListView.adapter = petAdapter
+        petListView.layoutManager = LinearLayoutManager(this)
 
         button.setOnClickListener {
             getDogImages {
-                if (petImageURLs.size >= NUM_IMAGES) {
-                    Glide.with(this@MainActivity)
-                        .load(petImageURLs[0])
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(imageView1)
-
-                    Glide.with(this@MainActivity)
-                        .load(petImageURLs[1])
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(imageView2)
-
-                    Glide.with(this@MainActivity)
-                        .load(petImageURLs[2])
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(imageView3)
+                if (petImageURLs.isNotEmpty()) {
+                    petAdapter.updateData(petImageURLs)
                 } else {
-                    Toast.makeText(this@MainActivity, "Failed to load enough images", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Failed to load images", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -58,12 +43,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cancel all pending requests when the activity is destroyed
         client.cancelAllRequests(true)
     }
 
     private fun getDogImages(callback: () -> Unit) {
-        client.get("https://dog.ceo/api/breeds/image/random/$NUM_IMAGES", object : JsonHttpResponseHandler() {
+        client.get("https://dog.ceo/api/breeds/image/random/20", object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>?, response: JSONObject?) {
                 val jsonArray = response?.optJSONArray("message")
                 petImageURLs = jsonArray?.let { array ->
@@ -71,20 +55,21 @@ class MainActivity : ComponentActivity() {
                         array.getString(index)
                     }
                 } ?: emptyList()
-
                 Log.d("Dog", "Response successful$response")
-                callback() // Execute the callback after fetching images
+                callback()
             }
 
-            override fun onFailure(statusCode: Int, headers: Array<Header>?, errorResponse: String?, throwable: Throwable?) {
+            override fun onFailure(statusCode: Int, headers: Array<Header>?, throwable: Throwable?, errorResponse: JSONObject?) {
                 Toast.makeText(this@MainActivity, "Error fetching images", Toast.LENGTH_SHORT).show()
                 Log.e("Dog Error", "Status code: $statusCode")
-                Log.e("Dog Error", "Error response: $errorResponse")
                 throwable?.printStackTrace()
             }
         })
     }
 }
+
+
+
 
 
 
