@@ -7,17 +7,15 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import org.json.JSONObject
+import com.example.randompet.R
 
 class MainActivity : ComponentActivity() {
-    private val client = AsyncHttpClient()
+    private val client = AsyncHttpClient() // Declaring the client here
     private lateinit var petAdapter: PetAdapter
-    private var petImageURLs = listOf<String>() // This was missing, and it's necessary for code logic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +29,9 @@ class MainActivity : ComponentActivity() {
         petListView.layoutManager = LinearLayoutManager(this)
 
         button.setOnClickListener {
-            getDogImages {
-                if (petImageURLs.isNotEmpty()) {
-                    petAdapter.updateData(petImageURLs)
+            getDogImages { pets ->
+                if (pets.isNotEmpty()) {
+                    petAdapter.updateData(pets)
                 } else {
                     Toast.makeText(this@MainActivity, "Failed to load images", Toast.LENGTH_SHORT).show()
                 }
@@ -41,22 +39,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        client.cancelAllRequests(true)
-    }
-
-    private fun getDogImages(callback: () -> Unit) {
+    private fun getDogImages(callback: (List<Pet>) -> Unit) {
         client.get("https://dog.ceo/api/breeds/image/random/20", object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header>?, response: JSONObject?) {
                 val jsonArray = response?.optJSONArray("message")
-                petImageURLs = jsonArray?.let { array ->
+                val pets = jsonArray?.let { array ->
                     List(array.length()) { index ->
-                        array.getString(index)
+                        val imageUrl = array.getString(index)
+                        val name = imageUrl.split("/").last().split(".")[0]
+                        Pet(name, "Unknown", imageUrl)
                     }
                 } ?: emptyList()
-                Log.d("Dog", "Response successful$response")
-                callback()
+                Log.d("Dog", "Response successful $response")
+                callback(pets)
             }
 
             override fun onFailure(statusCode: Int, headers: Array<Header>?, throwable: Throwable?, errorResponse: JSONObject?) {
@@ -67,6 +62,8 @@ class MainActivity : ComponentActivity() {
         })
     }
 }
+
+
 
 
 

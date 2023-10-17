@@ -1,33 +1,51 @@
 package com.example.randompet
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.randompet.R
 
-class PetAdapter(private var petImages: List<String>) : RecyclerView.Adapter<PetAdapter.ViewHolder>() {
+data class Pet(
+    val name: String,
+    val breed: String,
+    val imageUrl: String
+)
 
-    class ViewHolder(val imageView: ImageView) : RecyclerView.ViewHolder(imageView)
+class PetAdapter(private var pets: List<Pet>) : RecyclerView.Adapter<PetAdapter.ViewHolder>() {
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val imageView: ImageView = view.findViewById(R.id.petImage)
+        val nameView: TextView = view.findViewById(R.id.petName)
+        val breedView: TextView = view.findViewById(R.id.petBreed)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val imageView = LayoutInflater.from(parent.context).inflate(R.layout.pet_item, parent, false) as ImageView
-        return ViewHolder(imageView)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.pet_item, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount() = petImages.size
+    override fun getItemCount() = pets.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(holder.itemView.context)
-            .load(petImages[position])
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .into(holder.imageView)
+        val pet = pets[position]
+        Glide.with(holder.itemView.context).load(pet.imageUrl).into(holder.imageView)
+        holder.nameView.text = pet.name
+        holder.breedView.text = pet.breed
     }
 
-    fun updateData(newPetImages: List<String>) {
-        this.petImages = newPetImages
+    fun updateData(newPets: List<Pet>) {
+        this.pets = newPets
         notifyDataSetChanged()
     }
 }
+
+
+
+
+
+
+
