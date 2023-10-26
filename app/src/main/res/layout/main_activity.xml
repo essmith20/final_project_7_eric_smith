@@ -12,6 +12,7 @@
         android:id="@+id/petButton"
         android:layout_width="280dp"
         android:layout_height="50dp"
+        android:fontFamily="@font/homemade_apple"
         android:text="Random Pet" />
 
     <androidx.recyclerview.widget.RecyclerView

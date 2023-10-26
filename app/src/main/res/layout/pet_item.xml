@@ -17,14 +17,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:paddingTop="8dp"/>
+        android:paddingTop="8dp"
+        android:fontFamily="@font/homemade_apple"
+        android:text="CodeZen"/>
 
     <TextView
         android:id="@+id/petBreed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:paddingTop="4dp"/>
+        android:paddingTop="4dp"
+        android:fontFamily="@font/homemade_apple"
+        android:text="CodeZen"/>
 
 </LinearLayout>
 

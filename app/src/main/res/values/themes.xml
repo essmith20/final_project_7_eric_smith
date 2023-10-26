@@ -1,5 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.RandomPet" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+    </style>
+
+    <!-- If you want a custom style for TextViews or any other views -->
+    <style name="MyCustomTextStyle">
+        <item name="android:fontFamily">@font/homemade_apple</item>
+    </style>
+
 </resources>
+
